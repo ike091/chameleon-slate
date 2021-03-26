@@ -1,7 +1,6 @@
 # Chameleon Notes
 
 
-
 ## Kubespray Cluster behind NAT
 
 * In `hosts.yaml`, set `access_ip` to the internal IP - `ansible_host` will be set to
@@ -18,7 +17,7 @@ the external IP, and `ip` will be set to the internal IP
 **Manual Registration:**
 
 * Make a copy of `/etc/kubernetes/admin.conf` and change the `server:` field to the public IP of cluster (port 6443)
-* Modify KUBECONFIG environment variable: `export KUBECONFIG=/path/to/copied/admin.conf`
+* Modify `KUBECONFIG` environment variable: `export KUBECONFIG=/path/to/copied/admin.conf`
 * On the SLATE CLI, use the `--kubeconfig` flag to point to the updated `admin.conf`
 
 
@@ -30,6 +29,11 @@ the external IP, and `ip` will be set to the internal IP
 * Add `-e 'cluster_access_ip=<PUBLIC_NAT_IP:6443>'`
 
 `ansible-playbook -i ../kubespray/inventory/chameleon-test/hosts.yaml -u cc --become --become-user=root -e 'slate_cli_token=cr3UI1NG1bQYh3o_htdR0k' -e 'slate_cli_endpoint=https://api-dev.slateci.io:18080' -e 'slate_enable_ingress=false' -e 'cluster_access_ip=192.5.87.86:6443' site.yml`
+
+
+## Ingress controller notes:
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/baremetal/deploy.yaml
 
 
 ## Things to Learn
