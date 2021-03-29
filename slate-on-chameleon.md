@@ -17,6 +17,7 @@
 ansible-playbook -i /path/to/kubespray/inventory/<CLUSTER_NAME>/hosts.yaml -u <SSH_USER> --become --become-user=root \
  -e 'slate_cli_token=<SLATE_CLI_TOKEN>' \
  -e 'slate_cli_endpoint=https://api.slateci.io:443' \
- -e 'cluster_access_ip=<NAT_IP>:6443' \
+ -e 'cluster_access_ip=<EXTERNAL_NAT_IP>:6443' \
+ -e 'slate_enable_ingress=false' \
  site.yml
 ```

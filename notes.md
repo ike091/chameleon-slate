@@ -3,8 +3,7 @@
 
 ## Kubespray Cluster behind NAT
 
-* In `hosts.yaml`, set `access_ip` to the internal IP - `ansible_host` will be set to
-the external IP, and `ip` will be set to the internal IP
+* In `hosts.yaml`, set `access_ip` to the internal IP - `ansible_host` will be set to the external IP, and `ip` will be set to the internal IP
 
 * Add this variable in `group_vars/k8s-cluster/k8s-cluster.yml`: 
 `supplementary_addresses_in_ssl_keys: ['<EXTERNAL_NAT_IP>']`
