@@ -11,20 +11,38 @@ Once you have access to the Chameleon testbed, create a reservation for one inst
 Now, we are ready to set up a Kubernetes cluster on this machine.
 
 
-## Kubernetes Cluster Setup
+## Cluster Setup
 
-* Set up Ansible playbook according to instructions here: [SLATE Cluster Creation with Kubespray and Ansible](https://slateci.io/docs/cluster/automated/introduction.html). 
+To create a Kubernetes cluster and register it with SLATE, follow documentation [here](https://slateci.io/docs/cluster/automated/introduction.html), with a few changes.
 
-* Run playbook: `ansible-playbook -i inventory/<CLUSTER_NAME>/hosts.yaml --become --become-user=root -u <SSH_USER> cluster.yml`
+First, make sure MetalLB is disabled. 
 
+Second, follow the additional configuration steps for setting up a cluster behind a NAT (for one-to-one NATs). 
+
+Instructions for both of these things can be found in the [additional configurations](https://slateci.io/docs/cluster/automated/additional-configs.html) section of the docs. Make sure to not forget the `supplementary_addresses_in_ssl_keys` variable.
+
+Third, make sure any firewalls are disabled. On Chameleon, `ufw` is often running, even on CentOS. Disable it with `sudo ufw disable`.
+
+Finally, to run the Ansible playbook (run in `kubespray` directory):
+```bash
+ansible-playbook -i inventory/<CLUSTER_NAME>/hosts.yaml --become --become-user=root -u <SSH_USER> cluster.yml
+```
+
+
+### SLATE Registration
+
+To register the previously created Kubernetes cluster with SLATE, navigate to the `slate-ansible` directory, and run the following command:
 ```bash
 ansible-playbook -i /path/to/kubespray/inventory/<CLUSTER_NAME>/hosts.yaml -u <SSH_USER> --become --become-user=root \
  -e 'slate_cli_token=<SLATE_CLI_TOKEN>' \
- -e 'slate_cli_endpoint=https://api.slateci.io:443' \
+ -e 'slate_cli_endpoint=<SLATE_API_ENDPOINT>' \
  -e 'cluster_access_ip=<EXTERNAL_NAT_IP>:6443' \
  -e 'slate_enable_ingress=false' \
  site.yml
 ```
+
+After this command runs, you should have a SLATE cluster!
+
 
 ## Limitations
 
