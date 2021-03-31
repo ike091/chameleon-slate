@@ -27,12 +27,20 @@
 
 * Add `-e 'cluster_access_ip=<PUBLIC_NAT_IP:6443>'`
 
-`ansible-playbook -i ../kubespray/inventory/chameleon-test/hosts.yaml -u cc --become --become-user=root -e 'slate_cli_token=cr3UI1NG1bQYh3o_htdR0k' -e 'slate_cli_endpoint=https://api-dev.slateci.io:18080' -e 'slate_enable_ingress=false' -e 'cluster_access_ip=192.5.87.86:6443' site.yml`
+`ansible-playbook -i ../kubespray/inventory/chameleon/hosts.yaml -u cc --become --become-user=root -e 'slate_cli_token=cr3UI1NG1bQYh3o_htdR0k' -e 'slate_cli_endpoint=https://api-dev.slateci.io:18080' -e 'slate_enable_ingress=false' -e 'cluster_access_ip=<PUBLIC_NAT_IP>:6443' site.yml`
 
 
 ## Ingress controller notes:
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/baremetal/deploy.yaml
+To enable an ingress controller using the node's public IP, run the following command: `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/baremetal/deploy.yaml`
+
+Note that anything accessed through this ingress controller operates through NodePort, and that any resources accessed through this must have the `ingress-nginx` port appended.
+
+To find this port, run `kubectl get services -A`.
+
+Regular bare-metal ingress controller results in a 404 not-found error
+
+SLATE ingress controller failed deployment works - never assigns public IP
 
 
 ## Things to Learn

@@ -1,15 +1,19 @@
-# Creating a SLATE Cluster on Chameleon
+# Launching a SLATE Cluster on Chameleon
 
 
-**Chameleon:**
+## Chameleon Setup
 
-* Obtain Chameleon credentials
-* Join a project
-* Create a reservation for one instance and one floating public IP
-* Launch one CentOS 7 instance, with a floating public IP mapped to the instance's private interface
+To run a SLATE cluster on [Chameleon](https://www.chameleoncloud.org/), you must first have access to a Chameleon account, as well as be on an existing Chameleon project. 
+The [Chameleon Getting Started Guide](https://chameleoncloud.readthedocs.io/en/latest/getting-started/index.html) contains lots of useful information about this.
+
+Once you have access to the Chameleon testbed, create a reservation for one instance and one floating public IP address. Then, instantiate one CentOS 7 instance, and associate the previously allocated floating public IP to this instance. More detailed instructions regarding this process can also be found in the [Getting Started Guide](https://chameleoncloud.readthedocs.io/en/latest/getting-started/index.html). If you would like to setup a multiple-node cluster, provision additional machines at this time.
+
+Now, we are ready to set up a Kubernetes cluster on this machine.
+
+
+## Kubernetes Cluster Setup
 
 * Set up Ansible playbook according to instructions here: [SLATE Cluster Creation with Kubespray and Ansible](https://slateci.io/docs/cluster/automated/introduction.html). 
-* 
 
 * Run playbook: `ansible-playbook -i inventory/<CLUSTER_NAME>/hosts.yaml --become --become-user=root -u <SSH_USER> cluster.yml`
 
@@ -21,3 +25,37 @@ ansible-playbook -i /path/to/kubespray/inventory/<CLUSTER_NAME>/hosts.yaml -u <S
  -e 'slate_enable_ingress=false' \
  site.yml
 ```
+
+## Limitations
+
+Currently, SLATE on Chameleon does not support a floating-IP address provisioner (MetalLB on most SLATE clusters). Thus, most OSG applications cannot be run. Additionally, the functionality of the ingress controller present on most SLATE clusters will be limited.
+
+
+## Additional Components
+
+### Ingress Controller
+	
+Due to some current limitations of Chameleon, a fully-operational ingress controller cannot be installed. However, there is a workaround, but it requires all ingress traffic to be routed though a NodePort service. This means all ingress requests must have the ingress controller NodePort appended to their URL.
+
+To install the ingress controller, login to a cluster node with `kubectl` access, and download the following Kubernetes manifest:
+```bash
+curl -o deploy.yaml https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/baremetal/deploy.yaml`
+```
+
+Next, open this file with your preferred editor, and navigate to the line that contains this argument: `--ingress-class=nginx`
+Change this `ingress-class` parameter from `nginx` to `slate`. 
+
+Finally, deploy the ingress controller with `kubectl`:
+```bash
+kubectl apply -f /path/to/deploy.yaml
+```
+
+At this point, you will have an operational ingress controller. All that remains is to see which ports the ingress controller is running on. This can be done with `kubectl get services -n ingress-nginx`. 
+You will see an `ingress-nginx-controller` NodePort service, with ports 80 and 443 mapped to two different high ports. One of these ports (80 is http, 443 is https) must be appended to any and all requests using the ingress controller.
+
+
+
+## Contact Us
+
+If you have any additional comments or questions, please contact [our team](https://slateci.io/community/)!
+
