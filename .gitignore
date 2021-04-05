@@ -1,3 +1,4 @@
 admin.conf
 application_credentials.txt
 open_stack.rc
+app-cred-slate-test-credentials-openrc.sh

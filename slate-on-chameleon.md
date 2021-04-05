@@ -51,9 +51,11 @@ Currently, SLATE on Chameleon does not support a floating-IP address provisioner
 
 ## Additional Components
 
-### Ingress Controller
+### Ingress Controller - NodePort
 	
-Due to some current limitations of Chameleon, a fully-operational ingress controller cannot be installed. However, there is a workaround, but it requires all ingress traffic to be routed though a NodePort service. This means all ingress requests must have the ingress controller NodePort appended to their URL.
+Due to some current limitations of Chameleon, a fully-operational ingress controller cannot be installed. 
+However, there is a workaround, but it requires all ingress traffic to be routed though a NodePort service on the main node IP.
+This means all ingress requests must have the ingress controller NodePort appended to their URL.
 
 To install the ingress controller, login to a cluster node with `kubectl` access, and download the following Kubernetes manifest:
 ```bash
@@ -70,6 +72,18 @@ kubectl apply -f /path/to/deploy.yaml
 
 At this point, you will have an operational ingress controller. All that remains is to see which ports the ingress controller is running on. This can be done with `kubectl get services -n ingress-nginx`. 
 You will see an `ingress-nginx-controller` NodePort service, with ports 80 and 443 mapped to two different high ports. One of these ports (80 is http, 443 is https) must be appended to any and all requests using the ingress controller.
+
+
+### Ingress Controller - Separate IP
+
+*in progress*
+
+It is possible to create a slightly more functional SLATE cluster on Chameleon by provisioning another IP manually.
+
+* Create an extra network
+* Set up reservation with a node that has two NICs
+* Associate both networks with instance upon launch
+* Associate two public IPs with instance
 
 
 
