@@ -1,9 +1,15 @@
 import chi
 from chi import lease
 from chi import network
+from chi import server
+from chi.ssh import Remote
 
-chi.use_site("CHI@TACC")
-chi.set("project_name", "YOUR_PROJECT_NAME")
+PROJECT_NAME = 'SLATE'
+PROJECT_ID = 'CHI-210813'
+DEFAULT_SITE = 'CHI@TACC'
+
+chi.use_site(DEFAULT_SITE)
+chi.set("project_name", PROJECT_NAME)
 chi.set("image", "CC-CentOS8")
 
 
@@ -45,4 +51,36 @@ network.bind_floating_ip(reserved_fips[0], port_id=port_id, fixed_ip_address=por
 
 # Also bind a Floating IP to the public "VIP" for CHI-in-a-Box
 network.bind_floating_ip(reserved_fips[1], port_id=port_id, fixed_ip_address=port["fixed_ips"][0]["ip_address"])
+
+
+reservation_id = lease.get_node_reservation(l["id"])
+server.create_server(
+    "chi-in-a-box-dev",
+    reservation_id=reservation_id,
+    nics=[{"port-id": port_id}],
+    image_name=chi.get("image")
+)
+
+# Due to a quirk, the node initially only has the second public IP wired,
+# so waiting for reserved_fips[0] will not work! We will fix this in the next step.
+server.wait_for_tcp(reserved_fips[1], port=22)
+
+
+
+
+public_mgmt_address = reserved_fips[0]
+public_vip_address = reserved_fips[1]
+public_vip_address_internal_pair = port['fixed_ips'][0]['ip_address']
+private_vip_address = port['fixed_ips'][1]['ip_address']
+
+# Verify we can connect via the public management address
+hostname = Remote(ip=public_mgmt_address).run("hostname", hide=True).stdout
+print(f"Hostname: {hostname.strip()} ({public_mgmt_address})")
+
+print(f"""
+Management address: {public_mgmt_address}
+Public VIP: {public_vip_address}
+Private VIP: {private_vip_address}
+""")
+
 
