@@ -8,9 +8,10 @@ PROJECT_NAME = 'SLATE'
 PROJECT_ID = 'CHI-210813'
 DEFAULT_SITE = 'CHI@TACC'
 
-chi.use_site(DEFAULT_SITE)
-chi.set("project_name", PROJECT_NAME)
+#  chi.use_site(DEFAULT_SITE)
+#  chi.set("project_name", PROJECT_NAME)
 chi.set("image", "CC-CentOS8")
+chi.set("project_domain_id", "ba9774ff83e946689d066c501a2fd106")
 
 
 res = []
