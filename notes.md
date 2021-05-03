@@ -1,6 +1,26 @@
 # Chameleon Notes
 
 
+## MetalLB Notes
+
+`openstack port set <port-id> --allowed-address ip-address=<additional-ip-address>`
+*Note that this command is not allowed on the main "shared-net".*
+
+`openstack port set <port-id> --disable-port-security`
+results in the following error: "ConflictException: 409: Client Error for url: https://chi.uc.chameleoncloud.org:9696/v2.0/ports/183c2e42-8d82-4263-9236-8b9a2cbcf376, Port Security must be enabled in order to have allowed address pairs on a port."
+
+Was able to get everything up and running, can use additional internal IP
+Not sure if allowing additional addresses per port was necessary - verify this
+Verify that I can reach the ingress controller from another machine on subnet
+
+
+## Random
+
+Compute haswell nodes seem to have multiple interfaces? - verify in docs
+
+To set up a Chameleon instance without shared-net1: bring up another subnet, with a router connected to the "global" network
+
+
 ## Kubespray Cluster behind NAT
 
 * In `hosts.yaml`, set `access_ip` to the internal IP - `ansible_host` will be set to the external IP, and `ip` will be set to the internal IP
