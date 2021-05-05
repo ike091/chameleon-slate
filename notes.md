@@ -3,15 +3,41 @@
 
 ## MetalLB Notes
 
+First, to create a SLATE cluster with MetalLB enabled internally in Chameleon,
+we must set up a different private network that we control.
+This is necessary because Chameleon's default "shared-net" will block MetalLB functionality, because to Chameleon, MetalLB is executing an ARP-spoofing attack.
+
+To set up an additional network, we must first create a router. 
+1. First, create a router in the Chameleon interface, and connect it to the public network.
+1. Create an additional network. The exact network is not important, but we used this one: 192.168.0.0/24. 
+1. Create an interface on the router that connects to this additional network.
+1. Spin up instances, and in the "Network" section, make sure that the only network that is selected is our new network.
+1. Disable all firewalls
+1. Use the following command to disable ARP-spoofing protection for all your MetalLB IP addresses on your main node interface.
+
 `openstack port set <port-id> --allowed-address ip-address=<additional-ip-address>`
 *Note that this command is not allowed on the main "shared-net".*
 
 `openstack port set <port-id> --disable-port-security`
 results in the following error: "ConflictException: 409: Client Error for url: https://chi.uc.chameleoncloud.org:9696/v2.0/ports/183c2e42-8d82-4263-9236-8b9a2cbcf376, Port Security must be enabled in order to have allowed address pairs on a port."
 
+Looks like the "medium" VM needs to be used - "small" didn't have enough CPU for CoreDNS pods apparently.
+
 Was able to get everything up and running, can use additional internal IP
 Not sure if allowing additional addresses per port was necessary - verify this
 Verify that I can reach the ingress controller from another machine on subnet
+
+Allowed network addresses: 192.168.1.2,192.168.1.4 - is actually only two addresses because DHCP is at .2
+Subnet: 192.168.1.0/29
+192.168.1.0 - network?
+192.168.1.1 - gateway / router
+192.168.1.2 - DHCP
+192.168.1.3 - test instance 
+192.168.1.4 - main instance
+192.168.1.5 - MetalLB
+192.168.1.6 - MetalLB
+192.168.1.7 - broadcast
+bringing up additional instances fails
 
 
 ## Random
