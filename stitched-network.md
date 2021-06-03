@@ -8,9 +8,9 @@ To create a lease, use the lease-create command. The following arguments are req
 
 
 Command:
-`blazar lease-create --reservation resource_type=network,network_name=slate-network,resource_properties='["==","$physical_network","exogeni"]' --start-date "2021-05-10 8:00" --end-date "2021-05-13 19:00" vlan-lease-1`
+`blazar lease-create --reservation resource_type=network,network_name=slate-network-1,resource_properties='["==","$physical_network","exogeni"]' --start-date "2021-05-10 8:00" --end-date "2021-05-13 19:00" vlan-lease-1`
 
-`blazar lease-create --reservation resource_type=network,network_name=slate-network,resource_properties='["==","$physical_network","exogeni"]' --start-date "2021-05-10 8:00" --end-date "2021-05-13 19:00" vlan-lease-2`
+`blazar lease-create --reservation resource_type=network,network_name=slate-network-2,resource_properties='["==","$physical_network","exogeni"]' --start-date "2021-05-10 8:00" --end-date "2021-05-13 19:00" vlan-lease-2`
 
 
 
@@ -24,4 +24,8 @@ ERROR: Internal Server Error
 
 
 `blazar lease-create --physical-reservation min=1,max=1,resource_properties='["=", "$node_type","compute_haswell"]' --start-date "2021-05-10 06:00" --end-date "2021-05-13 19:00" slate_reservation`
+
+
+Be aware of blazar client versions. Seems to only work with 2.2.2, not 3.2.0
+Both networks cannot be named the same thing, otherwise an error will result.
 
