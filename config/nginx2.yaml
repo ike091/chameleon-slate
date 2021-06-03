@@ -1,12 +1,12 @@
 # The label to apply to this deployment, 
 # used to manage multiple instances of the same application
-Instance: chameleon1
+Instance: chameleon2
 
 # The HTML data that nginx should serve
 Data: |-
   <html>
   <body>
-  <h1>Hello world! This Nginx instance is hosted by Chameleon! (instance 1)</h1>
+  <h1>Hello world! This Nginx instance is hosted by Chameleon! (instance 2)</h1>
   </body>
   </html>
 
@@ -15,10 +15,10 @@ Ingress:
   # If true, use ingress control.
   # Otherwise, generic NodePort networking will be used, 
   # and the other settings in this section will be ignored. 
-  Enabled: true
+  Enabled: false
   # The subdomain to associate with this service.
   # This will result in a FQDN like {subdomain}.{cluster}.slateci.net
-  Subdomain: nginx1
+  Subdomain: nginx2
   # The class of the ingress controller to use. 
   # For SLATE this should be 'slate'. 
   Class: slate
