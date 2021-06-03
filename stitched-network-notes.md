@@ -44,4 +44,9 @@ Additionally, a router must be attached to each network for external access.
 * Ran the `perfsonar-testpoint` application (stable) on one cluster
 * Then, ran the `perfsonar-checker` application (incubator) on the other cluster
 * Used `/etc/hosts` files to give each cluster a DNS name
+* Log files are stored in `chameleon-slate/perfsonar-logs/*`
+* perfSONAR application was very easy to use - thumbs up to Muhammad and SLATE
+
+
+
 
